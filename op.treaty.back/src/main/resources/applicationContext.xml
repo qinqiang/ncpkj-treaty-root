@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans.xsd  
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context.xsd ">
+
+    <!-- 扫描@service注解 -->
+    <context:component-scan base-package="com.yada.ncpkj.treaty">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+    </context:component-scan>
+
+    <!-- 加载参数配置 -->
+    <import resource="classpath:/applicationContext-loader.xml"/>
+    <!-- 数据源，事物 -->
+    <import resource="classpath:/applicationContext-database.xml"/>
+    <!-- JPA -->
+    <import resource="classpath:/applicationContext-jpa.xml"/>
+    <!-- 监控报警配置文件 -->
+    <import resource="classpath:applicationContext-alarming.xml"/>
+</beans>

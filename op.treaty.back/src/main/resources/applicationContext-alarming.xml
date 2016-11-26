@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-lazy-init="false">
+
+    <!-- 配置AlarmingHandleFilter -->
+    <bean id="alarmingHandlerFilter" class="com.yada.ncpkj.op.alarming.AlarmingHandleFilter">
+        <constructor-arg name="alarmingHandler" ref="alarmingHandler"/>
+        <constructor-arg name="alarmingFilterCondtionMap">
+            <map key-type="com.yada.ncpkj.op.alarming.AlarmingMessage"
+                 value-type="com.yada.ncpkj.op.alarming.AlarmingFilterCondition">
+                <entry key="RMI_CONNECT_ERROR" value-ref="rmiAlarmingFilterCondition"></entry>
+                <entry key="DB_CONNECT_ERROR" value-ref="dbAlarmingFilterCondition"></entry>
+                <entry key="BCSP_CONNECT_ERROR" value-ref="bcspAlarmingFilterCondition"></entry>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <!-- 配置报警单位时间次数限制 -->
+    <bean id="rmiAlarmingFilterCondition" class="com.yada.ncpkj.op.alarming.AlarmingFilterCondition">
+        <property name="unitTime" value="${rmi.alarming.unitTime}"></property>
+        <property name="exceptionTimes" value="${rmi.alarming.exceptionTimes}"></property>
+    </bean>
+    <bean id="dbAlarmingFilterCondition" class="com.yada.ncpkj.op.alarming.AlarmingFilterCondition">
+        <property name="unitTime" value="${db.alarming.unitTime}"></property>
+        <property name="exceptionTimes" value="${db.alarming.exceptionTimes}"></property>
+    </bean>
+    <bean id="bcspAlarmingFilterCondition" class="com.yada.ncpkj.op.alarming.AlarmingFilterCondition">
+        <property name="unitTime" value="${bcsp.alarming.unitTime}"></property>
+        <property name="exceptionTimes" value="${bcsp.alarming.exceptionTimes}"></property>
+    </bean>
+
+    <!-- 配置alarmingHandler -->
+    <bean id="alarmingHandler" class="com.yada.ncpkj.op.alarming.AlarmingHandler">
+        <constructor-arg name="alarmingHandler" ref="opAlarmingHandler"/>
+        <constructor-arg name="timeInterval" value="${alarming.timeInterval}"/>
+    </bean>
+
+    <!-- 配置OP监控信息 -->
+    <bean id="opAlarmingHandler" class="com.yada.ncpkj.op.alarming.OPAlarmingHandler">
+        <constructor-arg name="ip" value="${realTime.monitoring.ip}"/>
+        <constructor-arg name="port" value="${realTime.monitoring.port}"/>
+        <constructor-arg name="alarmingSystemName" value="${realTime.monitoring.channelName}"/>
+        <constructor-arg name="alarmingHandler" ref="emailAlarmingHandler"/>
+    </bean>
+
+    <!-- 配置邮件监控信息 -->
+    <bean id="emailAlarmingHandler" class="com.yada.ncpkj.op.alarming.EmailAlarmingHandler">
+        <constructor-arg name="fromUser" value="${mail.fromUser}"/>
+        <constructor-arg name="toUser" value="${mail.toUser}"/>
+        <constructor-arg name="pwd" value="${mail.pwd}"/>
+        <constructor-arg name="smtp" value="${mail.smtp}"/>
+        <constructor-arg name="title" value="${mail.title}"/>
+    </bean>
+</beans>

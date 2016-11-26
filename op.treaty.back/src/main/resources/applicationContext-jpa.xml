@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/data/jpa
+		http://www.springframework.org/schema/data/jpa/spring-jpa.xsd"
+       default-lazy-init="false">
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan">
+            <list>
+                <value>com.yada.ncpkj.treaty.db.model</value>
+            </list>
+        </property>
+        <property name="jpaVendorAdapter" ref="jpaVendorAdapter"/>
+        <property name="jpaProperties">
+            <props>
+                <!-- 命名规则 My_NAME->MyName -->
+                <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- JPA相关注解扫描 -->
+    <jpa:repositories base-package="com.yada.ncpkj.treaty.db.dao"/>
+    <!-- 数据服务相关注解扫描 -->
+    <context:component-scan base-package="com.yada.ncpkj.treaty.db.dao"/>
+
+    <beans profile="test">
+        <bean id="jpaVendorAdapter"
+              class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+            <property name="generateDdl" value="true"/>
+            <property name="showSql" value="true"/>
+            <property name="database" value="H2"/>
+        </bean>
+    </beans>
+
+    <beans profile="sit,uat,production">
+        <bean id="jpaVendorAdapter"
+              class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+            <property name="generateDdl" value="false"/>
+            <property name="showSql" value="false"/>
+            <property name="database" value="ORACLE"/>
+        </bean>
+    </beans>
+
+</beans>
